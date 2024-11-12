@@ -23,7 +23,7 @@ StochasticDiffEq = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
 WignerSymbols = "9f57e263-0b3d-5e2e-b1be-24f2bb48858b"
 
 [compat]
-Arpack = "0.5.1 - 0.5.3"
+Arpack = "0.5.1"
 DiffEqBase = "6.113"
 DiffEqCallbacks = "2, 3, 4"
 DiffEqNoiseProcess = "5.23.0"
