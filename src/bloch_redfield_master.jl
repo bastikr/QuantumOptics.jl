@@ -128,7 +128,7 @@ Time-evolution according to a Bloch-Redfield master equation.
 """
 function master_bloch_redfield(tspan,
         rho0::Operator{B,B}, L::SuperOperator{Tuple{B,B},Tuple{B,B}},
-        H::AbstractOperator{B,B}; fout::Union{Function,Nothing}=nothing,
+        H::BLROperator{B,B}; fout::Union{Function,Nothing}=nothing,
         kwargs...) where {B}
 
     #Prep basis transf

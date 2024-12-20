@@ -1,3 +1,4 @@
+using QuantumOpticsBase: BLROperator
 """
     timeevolution.schroedinger(tspan, psi0, H; fout)
 
@@ -12,9 +13,9 @@ Integrate Schroedinger equation to evolve states or compute propagators.
         normalized nor permanent! It is still in use by the ode solver and
         therefore must not be changed.
 """
-function schroedinger(tspan, psi0::T, H::AbstractOperator{B,B};
+function schroedinger(tspan, psi0::T, H::BLROperator{B,B};
                 fout=nothing,
-                kwargs...) where {B,Bo,T<:Union{AbstractOperator{B,Bo},StateVector{B}}}
+                kwargs...) where {B,Bo,T<:Union{BLROperator{B,Bo},Bra{B},Ket{B}}}
     _check_const(H)
     dschroedinger_(t, psi, dpsi) = dschroedinger!(dpsi, H, psi)
     tspan, psi0 = _promote_time_and_state(psi0, H, tspan) # promote only if ForwardDiff.Dual
@@ -57,7 +58,7 @@ function schroedinger_dynamic(tspan, psi0, f;
 end
 
 function schroedinger_dynamic(tspan, psi0::T, H::AbstractTimeDependentOperator;
-    kwargs...) where {B,Bp,T<:Union{AbstractOperator{B,Bp},StateVector{B}}}
+    kwargs...) where {B,Bp,T<:Union{BLROperator{B,Bp},Bra{B},Ket{B}}}
     promoted_tspan, psi0 = _promote_time_and_state(psi0, H, tspan)
     if promoted_tspan !== tspan # promote H
         promoted_H = TimeDependentSum(H.coefficients, H.static_op.operators; init_time=first(promoted_tspan))
@@ -74,8 +75,10 @@ Write the data stored in `y` into `x`, where either `x` or `y` is a quantum
 object such as a [`Ket`](@ref) or an [`Operator`](@ref), and the other one is
 a vector or a matrix with a matching size.
 """
-recast!(psi::StateVector{B,D},x::D) where {B, D} = (psi.data = x);
-recast!(x::D,psi::StateVector{B,D}) where {B, D} = nothing
+recast!(psi::Bra{B,D},x::D) where {B, D} = (psi.data = x);
+recast!(x::D,psi::Bra{B,D}) where {B, D} = nothing
+recast!(psi::Ket{B,D},x::D) where {B, D} = (psi.data = x);
+recast!(x::D,psi::Ket{B,D}) where {B, D} = nothing
 function recast!(proj::Operator{B1,B2,T},x::T) where {B1,B2,T}
     proj.data = x
 end

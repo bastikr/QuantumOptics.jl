@@ -1,4 +1,5 @@
 import ...timeevolution: dschroedinger!, dschroedinger_dynamic!, check_schroedinger
+using QuantumOpticsBase: BLROperator
 
 """
     stochastic.schroedinger(tspan, state0, H, Hs[; fout, ...])
@@ -19,7 +20,7 @@ Integrate stochastic Schrödinger equation.
         each time step taken by the solver.
 * `kwargs...`: Further arguments are passed on to the ode solver.
 """
-function schroedinger(tspan, psi0::T, H::AbstractOperator{B,B}, Hs::Vector;
+function schroedinger(tspan, psi0::T, H::BLROperator{B,B}, Hs::Vector;
                 fout=nothing,
                 normalize_state=false,
                 calback=nothing,
@@ -35,7 +36,7 @@ function schroedinger(tspan, psi0::T, H::AbstractOperator{B,B}, Hs::Vector;
 
     # TODO: replace checks by dispatch
     for h=Hs
-        @assert isa(h, AbstractOperator{B,B})
+        @assert isa(h, BLROperator{B,B})
     end
 
     dschroedinger_determ(t, psi, dpsi) = dschroedinger!(dpsi, H, psi)
@@ -54,7 +55,7 @@ function schroedinger(tspan, psi0::T, H::AbstractOperator{B,B}, Hs::Vector;
                     ncb=ncb,
                     kwargs...)
 end
-schroedinger(tspan, psi0::Ket{B}, H::AbstractOperator{B,B}, Hs::AbstractOperator{B,B}; kwargs...) where B = schroedinger(tspan, psi0, H, [Hs]; kwargs...)
+schroedinger(tspan, psi0::Ket{B}, H::BLROperator{B,B}, Hs::BLROperator{B,B}; kwargs...) where B = schroedinger(tspan, psi0, H, [Hs]; kwargs...)
 
 """
     stochastic.schroedinger_dynamic(tspan, state0, fdeterm, fstoch[; fout, ...])

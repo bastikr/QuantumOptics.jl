@@ -4,7 +4,8 @@ import QuantumOpticsBase:
     wigner,
     coherentspinstate,
     qfuncsu2,
-    wignersu2
+    wignersu2,
+    BLROperator
 
 """
     qfunc(a, α)
@@ -16,12 +17,12 @@ function can either be evaluated on one point α or on a grid specified by
 the vectors `xvec` and `yvec`. Note that conversion from `x` and `y` to `α` is
 done via the relation ``α = \\frac{1}{\\sqrt{2}}(x + i y)``.
 """
-function qfunc(rho::AbstractOperator{B,B}, alpha) where B<:FockBasis
+function qfunc(rho::BLROperator{B,B}, alpha) where B<:FockBasis
     b = basis(rho)
     _qfunc_operator(rho, alpha, Ket(b), Ket(b))
 end
 
-function qfunc(rho::AbstractOperator{B,B}, xvec::AbstractVector, yvec::AbstractVector) where B<:FockBasis
+function qfunc(rho::BLROperator{B,B}, xvec::AbstractVector, yvec::AbstractVector) where B<:FockBasis
     b = basis(rho)
     Nx = length(xvec)
     Ny = length(yvec)
@@ -84,7 +85,7 @@ function qfunc(psi::Ket{B}, xvec::AbstractVector, yvec::AbstractVector) where B<
     return result
 end
 
-function qfunc(state::Union{Ket{B}, AbstractOperator{B,B}}, x, y) where B<:FockBasis
+function qfunc(state::Union{Ket{B}, BLROperator{B,B}}, x, y) where B<:FockBasis
     qfunc(state, complex(x, y)/sqrt(2))
 end
 

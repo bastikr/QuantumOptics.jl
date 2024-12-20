@@ -1,4 +1,5 @@
 import ...timeevolution: dmaster_h!, dmaster_nh!, dmaster_h_dynamic!, check_master
+using QuantumOpticsBase: BLROperator
 
 """
     stochastic.master(tspan, rho0, H, J, C; <keyword arguments>)
@@ -29,7 +30,7 @@ non-hermitian Hamiltonian and then calls master_nh which is slightly faster.
         be changed.
 * `kwargs...`: Further arguments are passed on to the ode solver.
 """
-function master(tspan, rho0::T, H::AbstractOperator{B,B},
+function master(tspan, rho0::T, H::BLROperator{B,B},
                 J, C;
                 rates=nothing,
                 Jdagger=dagger.(J), Cdagger=dagger.(C),
@@ -165,13 +166,13 @@ function check_master_stoch(rho0::Operator{B,B}, C, Cdagger) where B
     @assert length(C) == length(Cdagger)
     isreducible = true
     for c=C
-        @assert isa(c, AbstractOperator{B,B})
+        @assert isa(c, BLROperator{B,B})
         if !isa(c, DataOperator)
             isreducible = false
         end
     end
     for c=Cdagger
-        @assert isa(c, AbstractOperator{B,B})
+        @assert isa(c, BLROperator{B,B})
         if !isa(c, DataOperator)
             isreducible = false
         end

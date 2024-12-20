@@ -1,8 +1,9 @@
 using Test
 using QuantumOptics
 using LinearAlgebra, SparseArrays, Random
+using QuantumOpticsBase: BLROperator
 
-mutable struct SpectralanalysisTestOperator{BL<:Basis,BR<:Basis} <: AbstractOperator{BL,BR} end
+mutable struct SpectralanalysisTestOperator{BL<:Basis,BR<:Basis} <: BLROperator{BL,BR} end
 
 @testset "spectralanalysis" begin
 
